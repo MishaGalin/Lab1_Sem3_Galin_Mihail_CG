@@ -18,9 +18,8 @@ void line(int x1, int y1, int x2, int y2, COLORREF Color = RGB(255, 255, 255))
 	int y = y1;
 	while (x <= x2)
 	{
-		if (x2 - x1 == 0) return;
 		SetPixel(hdc, x, y, Color);
-		y = y1 + ((y2 - x1) * (x - x1)) / (x2 - x1);
+		y = y1 + (y2 - y1) / (x2 - x1) * (x - x1);
 		x++;
 	}
 }
@@ -83,7 +82,7 @@ int LineFill(int x, int y, int dir, int PrevXl, int PrevXr, COLORREF BorderColor
 	do c = GetPixel(hdc, --xl, y); while ((c != BorderColor) && (c != Color));
 	do c = GetPixel(hdc, ++xr, y); while ((c != BorderColor) && (c != Color));
 	xl++; xr--;
-	drawLine(xl, y, xr, y, Color);
+	line(xl, y, xr, y, Color);
 	for (x = xl; x <= xr; x++)
 	{
 		c = GetPixel(hdc, x, y + dir);
@@ -105,7 +104,7 @@ int LineFill(int x, int y, int dir, int PrevXl, int PrevXr, COLORREF BorderColor
 int main()
 {
 	srand(unsigned int(time(0)));
-	int a = 0, circle1X, circle1Y, circle2X, circle2Y, radius;
+	int circle1X, circle1Y, circle2X, circle2Y, radius;
 	double distance;
 
 	while (true) {
@@ -117,7 +116,7 @@ int main()
 		radius = 80 + rand() % 20;
 		distance = sqrt(pow(circle1X - circle2X, 2) + pow(circle1Y - circle2Y, 2));
 
-		if (int(distance) <= (2 * radius) && int(distance) > radius) {
+		if (int(distance) < (2 * radius) && int(distance) > radius) {
 			drawCircle(circle1X, circle1Y, radius);
 			drawCircle(circle2X, circle2Y, radius);
 			LineFill((circle1X + circle2X) / 2, (circle1Y + circle2Y) / 2, 1, (circle1X + circle2X) / 2, (circle1X + circle2X) / 2, white, red);
@@ -126,6 +125,4 @@ int main()
 		}
 		else continue;
 	}
-
-	cin >> a;
 }
